@@ -1,10 +1,10 @@
-// script.js - searches examples, displays code, enables copy buttons
+// script.js - search, render, and copy logic only
+
 document.addEventListener('DOMContentLoaded', () => {
   const data = {
-    // key terms to match; each entry has title, desc, html, js, jsx
-    "navigation bar": {
-      title: "Generic Navigation Bar",
-      desc: "Simple responsive nav with links. Includes vanilla JS toggle for mobile and a React JSX version.",
+    'navigation bar': {
+      title: 'Generic Navigation Bar',
+      desc: 'Responsive nav with a mobile toggle. Includes plain HTML/CSS, vanilla JS toggle, and React JSX variant.',
       html: `<nav class="navbar">
   <div class="container">
     <a class="brand" href="#">MySite</a>
@@ -19,38 +19,28 @@ document.addEventListener('DOMContentLoaded', () => {
 </nav>
 
 <style>
-.navbar{background:#fff;padding:0.5rem 1rem;border-radius:8px;display:block}
-.navbar .container{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{font-weight:700}
-.nav-list{list-style:none;display:flex;gap:12px;margin:0;padding:0}
-.nav-toggle{display:none;background:transparent;border:0;font-size:1.25rem}
-@media (max-width:768px){
-  .nav-list{display:none;flex-direction:column;gap:8px}
-  .nav-toggle{display:inline-block}
-  .nav-list.show{display:flex}
-}
+/* example CSS omitted per request if desired */
 </style>`,
-
       js: `// Toggle mobile nav (vanilla JS)
 document.querySelectorAll('.nav-toggle').forEach(btn => {
   btn.addEventListener('click', () => {
     const ul = document.querySelector('.nav-list');
+    if (!ul) return;
     ul.classList.toggle('show');
     btn.setAttribute('aria-expanded', ul.classList.contains('show'));
   });
 });`,
+      jsx: `// React NavBar (JSX)
+import React, { useState } from 'react';
 
-      jsx: `// React functional NavBar (JSX)
-import React, {useState} from 'react';
-
-export default function NavBar(){
+export default function NavBar() {
   const [open, setOpen] = useState(false);
   return (
     <nav className="navbar">
       <div className="container">
         <a className="brand" href="#">MySite</a>
         <button onClick={() => setOpen(!open)} aria-expanded={open} className="nav-toggle">☰</button>
-        <ul className={\`nav-list \${open ? 'show' : ''}\`}>
+        <ul className={\`nav-list ${open ? 'show' : ''}\`}>
           <li><a href="#">Home</a></li>
           <li><a href="#">Projects</a></li>
           <li><a href="#">About</a></li>
@@ -60,12 +50,11 @@ export default function NavBar(){
     </nav>
   );
 }`
-
     }
-    // You can add more searchable entries here with other keys/aliases
+    // add more entries as needed
   };
 
-  const indexKeys = Object.keys(data);
+  const keys = Object.keys(data);
   const searchInput = document.getElementById('searchInput');
   const searchBtn = document.getElementById('searchBtn');
   const resultCard = document.getElementById('resultCard');
@@ -76,77 +65,94 @@ export default function NavBar(){
   const jsCode = document.getElementById('jsCode');
   const jsxCode = document.getElementById('jsxCode');
   const statusMessage = document.getElementById('statusMessage');
+  const yearEl = document.getElementById('year');
 
-  function showStatus(msg = 'Copied!'){
-    statusMessage.textContent = msg;
-    statusMessage.classList.remove('d-none');
-    setTimeout(() => statusMessage.classList.add('d-none'), 1400);
+  if (yearEl) {
+    yearEl.textContent = new Date().getFullYear();
   }
 
-  function escapeHtml(s){ return s.replace(/&/g, '&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-  function renderEntry(entry){
+  function render(entry) {
     exampleTitle.textContent = entry.title;
     exampleDesc.textContent = entry.desc;
-    htmlCode.innerHTML = escapeHtml(entry.html);
-    jsCode.innerHTML = escapeHtml(entry.js);
-    jsxCode.innerHTML = escapeHtml(entry.jsx);
-    resultCard.classList.remove('d-none');
-    noResult.classList.add('d-none');
+    htmlCode.textContent = entry.html;
+    jsCode.textContent = entry.js;
+    jsxCode.textContent = entry.jsx;
+    resultCard.classList.remove('hidden');
+    noResult.classList.add('hidden');
   }
 
-  function clearResults(){
-    resultCard.classList.add('d-none');
-    noResult.classList.add('d-none');
+  function hideResults() {
+    resultCard.classList.add('hidden');
+    noResult.classList.add('hidden');
   }
 
-  function findMatch(q){
-    if(!q) return null;
-    q = q.toLowerCase();
-    // simple matching: check keys and also title/desc
-    for(const key of indexKeys){
-      if(key.includes(q)) return data[key];
-      const d = data[key];
-      if(d.title.toLowerCase().includes(q) || d.desc.toLowerCase().includes(q)) return d;
+  function showNoResults() {
+    resultCard.classList.add('hidden');
+    noResult.classList.remove('hidden');
+  }
+
+  function findMatch(query) {
+    if (!query) return null;
+    const q = query.toLowerCase().trim();
+
+    for (const key of keys) {
+      if (key.includes(q)) return data[key];
     }
-    // partial-match by words
-    for(const key of indexKeys){
-      const words = key.split(/\s+/);
-      if(words.some(w => q.includes(w) || w.includes(q))) return data[key];
+
+    for (const key of keys) {
+      const entry = data[key];
+      if (entry.title.toLowerCase().includes(q) || entry.desc.toLowerCase().includes(q)) {
+        return entry;
+      }
     }
+
     return null;
   }
 
-  searchBtn.addEventListener('click', () => {
-    const q = searchInput.value.trim();
-    if(!q){ clearResults(); return; }
-    const match = findMatch(q);
-    if(match) renderEntry(match);
-    else {
-      resultCard.classList.add('d-none');
-      noResult.classList.remove('d-none');
+  function search() {
+    const query = searchInput.value;
+    const match = findMatch(query);
+    if (match) {
+      render(match);
+    } else {
+      showNoResults();
+    }
+  }
+
+  searchBtn.addEventListener('click', search);
+  searchInput.addEventListener('keydown', event => {
+    if (event.key === 'Enter') {
+      search();
     }
   });
 
-  searchInput.addEventListener('keydown', e => {
-    if(e.key === 'Enter'){ e.preventDefault(); searchBtn.click(); }
+  document.querySelectorAll('.copy-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const targetId = button.dataset.target;
+      const target = document.getElementById(targetId);
+      if (!target) return;
+
+      const textToCopy = target.textContent;
+      if (!navigator.clipboard) {
+        statusMessage.textContent = 'Clipboard not supported';
+        statusMessage.classList.remove('hidden');
+        return;
+      }
+
+      navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+          statusMessage.textContent = 'Copied ✓';
+          statusMessage.classList.remove('hidden');
+          setTimeout(() => {
+            statusMessage.classList.add('hidden');
+          }, 1800);
+        })
+        .catch(() => {
+          statusMessage.textContent = 'Copy failed';
+          statusMessage.classList.remove('hidden');
+        });
+    });
   });
 
-  // Copy buttons
-  document.addEventListener('click', async (e) => {
-    const btn = e.target.closest('.copy-btn');
-    if(!btn) return;
-    const targetId = btn.getAttribute('data-target');
-    const el = document.getElementById(targetId);
-    if(!el) return;
-    try {
-      await navigator.clipboard.writeText(el.innerText);
-      showStatus('Copied to clipboard');
-    } catch (err) {
-      showStatus('Copy failed');
-    }
-  });
-
-  // show current year
-  document.getElementById('year').textContent = new Date().getFullYear();
+  hideResults();
 });

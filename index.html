@@ -3,87 +3,80 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Code Finder — Nav Bar Examples</title>
+  <title>Code Finder — Components</title>
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Custom CSS -->
-  <link href="styles.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
 </head>
 <body>
-  <div class="container py-4">
-    <header class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-3 gap-3">
-      <div class="d-flex align-items-center gap-3">
+  <div class="wrap">
+    <header class="header">
+      <div class="brand">
         <div class="logo">CF</div>
         <div>
-          <h1 class="h5 mb-0">Code Finder</h1>
-          <div class="text-muted small">Search examples (HTML, JS, JSX) and copy to clipboard</div>
+          <h1 class="site-title">Code Finder</h1>
+          <div class="tagline">Search small UI components (HTML, JS, JSX) and copy snippets</div>
         </div>
       </div>
 
-      <div class="w-100" style="max-width:720px;">
-        <div class="card shadow-sm p-3 d-flex flex-row gap-2 align-items-center">
-          <input id="searchInput" class="form-control me-2" type="search" placeholder='Search e.g. "navigation bar"' />
-          <button id="searchBtn" class="btn btn-primary">Find</button>
+      <div class="search-area">
+        <div class="search-card">
+          <input id="searchInput" class="search-input" type="search" placeholder='Try "navigation bar"' />
+          <button id="searchBtn" class="btn primary">Find</button>
         </div>
       </div>
     </header>
 
-    <main class="row g-3">
-      <section class="col-12">
-        <div id="resultCard" class="card p-3 d-none">
-          <h2 id="exampleTitle" class="h6 mb-2"></h2>
-          <p id="exampleDesc" class="text-muted small mb-3"></p>
-
-          <div class="mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-              <strong>HTML</strong>
-              <button class="btn btn-sm btn-outline-secondary copy-btn" data-target="htmlCode">Copy</button>
+    <main class="main-content">
+      <section class="result-wrapper">
+        <div id="resultCard" class="card hidden">
+          <div class="card-head">
+            <div>
+              <h2 id="exampleTitle" class="example-title"></h2>
+              <p id="exampleDesc" class="example-desc"></p>
             </div>
-            <pre><code id="htmlCode" class="language-html"></code></pre>
+            <div class="tag">Example</div>
           </div>
 
-          <div class="mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-              <strong>JavaScript (vanilla)</strong>
-              <button class="btn btn-sm btn-outline-secondary copy-btn" data-target="jsCode">Copy</button>
+          <div class="snippets">
+            <div class="snippet-block">
+              <div class="snippet-header">
+                <strong>HTML</strong>
+                <button class="btn small outline copy-btn" data-target="htmlCode">Copy</button>
+              </div>
+              <pre><code id="htmlCode" class="code-block"></code></pre>
             </div>
-            <pre><code id="jsCode" class="language-js"></code></pre>
+
+            <div class="snippet-block">
+              <div class="snippet-header">
+                <strong>JavaScript</strong>
+                <button class="btn small outline copy-btn" data-target="jsCode">Copy</button>
+              </div>
+              <pre><code id="jsCode" class="code-block"></code></pre>
+            </div>
+
+            <div class="snippet-block">
+              <div class="snippet-header">
+                <strong>JSX (React)</strong>
+                <button class="btn small outline copy-btn" data-target="jsxCode">Copy</button>
+              </div>
+              <pre><code id="jsxCode" class="code-block"></code></pre>
+            </div>
           </div>
 
-          <div class="mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-              <strong>JSX (React)</strong>
-              <button class="btn btn-sm btn-outline-secondary copy-btn" data-target="jsxCode">Copy</button>
-            </div>
-            <pre><code id="jsxCode" class="language-jsx"></code></pre>
-          </div>
-
-          <div id="statusMessage" class="small text-success d-none">Copied!</div>
+          <div id="statusMessage" class="status hidden">Copied ✓</div>
         </div>
 
-        <div id="noResult" class="card p-3 text-muted d-none">
+        <div id="noResult" class="card muted hidden">
           No examples found for that query. Try "navigation", "nav", or "navigation bar".
         </div>
       </section>
     </main>
 
-    <footer class="text-center text-muted small mt-3">
-      © <span id="year"></span> — Example snippets
+    <footer class="footer">
+      © <span id="year"></span> — Code Finder
     </footer>
   </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Custom JS -->
   <script src="script.js"></script>
 </body>
 </html>
-<!--How to use
-
-Place the three files in the same folder and open index.html.
-Search for "navigation bar", "nav", or similar — the page will display the examples and copy buttons.
-Extend the data object in script.js to add more searchable components or variations.
-If you want, I can add syntax highlighting (Prism/Highlight.js) or additional examples (dropdown nav, Bootstrap nav, accessible nav). Which would you like next?-->
