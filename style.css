@@ -1,0 +1,37 @@
+:root{
+  --accent:#2563eb;
+  --muted:#6b7280;
+  --radius:10px;
+}
+
+body {
+  background:#f7f8fb;
+  color:#111;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.logo{
+  width:44px;
+  height:44px;
+  border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),#60a5fa);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-weight:700;
+}
+
+.card { border: none; border-radius: var(--radius); }
+
+pre {
+  background:#0b1220;
+  color:#e6eef8;
+  padding:12px;
+  border-radius:8px;
+  overflow:auto;
+  font-size:0.9rem;
+}
+pre code { white-space: pre-wrap; }
+.copy-btn { min-width:72px; }
+#statusMessage { transition:opacity .25s; }
